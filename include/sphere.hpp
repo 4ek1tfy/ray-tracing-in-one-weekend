@@ -1,0 +1,41 @@
+#pragma once
+
+#include "hittable.hpp"
+#include <algorithm>
+
+class sphere : public hittable{
+public:
+    sphere(const point3& _center, double _radius) : center(_center), radius(std::fmax(0.0, _radius)){}
+
+    bool hit(const ray& r, interval ray_t, hit_record& rec){
+        vec3 oc = center - r.origin();
+        auto a = r.direction().length_squared();
+        auto h = dot(r.direction(), oc);
+        auto c = oc.length_squared() - radius*radius;
+        auto discriminant = h*h - a*c;
+
+        if(discriminant < 0){
+            return false;
+        }
+
+
+        auto sqrtd = sqrt(discriminant);
+
+        auto root = (h - sqrtd) / a;
+        if(!ray_t.surrounds(root)){
+            root = (h + sqrtd) / a;
+            if (!ray_t.surrounds(root)) return false;
+        }
+
+        rec.t = root;
+        rec.p = r.at(rec.t);
+        vec3 outward_normal = (rec.p - center) / radius;
+        rec.set_face_normal(r, outward_normal);
+
+        return true;
+    }
+
+private:
+    vec3 center;
+    double radius;
+};

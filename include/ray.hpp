@@ -1,8 +1,5 @@
 #pragma once
 
-#include <vec3.hpp>
-#include <color.hpp>
-
 class ray{
 private:
     point3 orig;
