@@ -7,7 +7,7 @@ class sphere : public hittable{
 public:
     sphere(const point3& _center, double _radius) : center(_center), radius(std::fmax(0.0, _radius)){}
 
-    bool hit(const ray& r, interval ray_t, hit_record& rec){
+    bool hit(const ray& r, interval ray_t, hit_record& rec) const{
         vec3 oc = center - r.origin();
         auto a = r.direction().length_squared();
         auto h = dot(r.direction(), oc);
