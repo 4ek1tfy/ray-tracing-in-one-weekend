@@ -27,3 +27,5 @@ inline double random_double(double min, double max) {
 #include "ray.hpp"
 #include "interval.hpp"
 #include "color.hpp"
+#include "hittable.hpp"
+#include "material.hpp"

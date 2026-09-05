@@ -43,6 +43,19 @@ public:
     double length() const{
         return std::sqrt(length_squared());
     }
+
+    static vec3 random_vector() {
+        return vec3(random_double(), random_double(), random_double());
+    }
+
+    static vec3 random_vector(double min, double max) {
+        return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+    }
+
+    bool near_zero() const{
+        auto s = 1e-8;
+        return (std::fabs(e[0]) < s) && (std::fabs(e[1]) < s) && (std::fabs(e[2]) < s);
+    }
 };
 
 using point3 = vec3;
@@ -63,15 +76,15 @@ inline vec3 operator*(const vec3& v1, const vec3& v2){
     return vec3(v1.x() * v2.x(), v1.y() * v2.y(), v1.z() * v2.z());
 }
 
-inline vec3 operator*(const double& t, const vec3& v){
+inline vec3 operator*(const double t, const vec3& v){
     return vec3(t * v.x(), t * v.y(), t * v.z());
 }
 
-inline vec3 operator*(const vec3& v, const double& t){
+inline vec3 operator*(const vec3& v, const double t){
     return t * v;
 }
 
-inline vec3 operator/(const vec3& v, const double& t){
+inline vec3 operator/(const vec3& v, const double t){
     return 1/t * v;
 }
 
@@ -87,4 +100,30 @@ inline vec3 cross(const vec3& v1, const vec3& v2){
 
 inline vec3 unit_vector(const vec3& v){
     return v / v.length();
+}
+
+inline vec3 random_unit_vector(){
+    while(true){
+        auto p = vec3::random_vector(-1.0, 1.0);
+        double lensq = p.length_squared();
+
+        if(1e-160 < lensq && lensq <= 1) { 
+            double divider = sqrt(lensq);
+            if(divider == 0.0) divider = 0.001;
+            return p / divider;
+        }
+    }
+}
+
+inline vec3 random_on_hemisphere(const vec3& normal){
+    vec3 on_unit_vector = random_unit_vector();
+    if(dot(on_unit_vector, normal) > 0.0){
+        return on_unit_vector;
+    } else {
+        return -on_unit_vector;
+    }
+}
+
+inline vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2 * dot(v, n)*n;
 }

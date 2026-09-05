@@ -1,20 +1,19 @@
 #pragma once
-
-#include "hittable.hpp"
 #include <algorithm>
 
 class sphere : public hittable{
 public:
-    sphere(const point3& _center, double _radius) : center(_center), radius(std::fmax(0.0, _radius)){}
+    sphere(const point3& _center, double _radius, std::shared_ptr<material> _mat) : 
+      center(_center), radius(std::max(0.001, _radius)), mat(std::move(_mat)){}
 
-    bool hit(const ray& r, interval ray_t, hit_record& rec) const{
+    bool hit(const ray& r, interval ray_t, hit_record& rec) const override{
         vec3 oc = center - r.origin();
-        auto a = r.direction().length_squared();
+        double a = r.direction().length_squared();
         auto h = dot(r.direction(), oc);
         auto c = oc.length_squared() - radius*radius;
         auto discriminant = h*h - a*c;
 
-        if(discriminant < 0){
+        if(discriminant < 0 || a == 0.0){
             return false;
         }
 
@@ -29,8 +28,12 @@ public:
 
         rec.t = root;
         rec.p = r.at(rec.t);
+
+        if(radius == 0.0) return false;
+        
         vec3 outward_normal = (rec.p - center) / radius;
         rec.set_face_normal(r, outward_normal);
+        rec.mat = mat;
 
         return true;
     }
@@ -38,4 +41,5 @@ public:
 private:
     vec3 center;
     double radius;
+    std::shared_ptr<material> mat;
 };

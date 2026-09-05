@@ -1,7 +1,4 @@
 #pragma once
-
-#include "hittable.hpp"
-
 #include <vector>
 
 class hittable_list : public hittable{
@@ -25,6 +22,7 @@ public:
         auto closest_so_far = ray_t.max;
 
         for(const auto& object : objects){
+            if(object == nullptr) continue;
             if(object->hit(r, interval(ray_t.min, closest_so_far), temp_rec)){
                 hit_anything = true;
                 closest_so_far = temp_rec.t;
