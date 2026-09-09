@@ -1,35 +1,27 @@
 #pragma once
+#include "hittable.hpp"
+#include "ray.hpp"
+#include "interval.hpp"
+#include "aabb.hpp"
+
+#include <memory>
 #include <vector>
 
 class hittable_list : public hittable{
 public:
     std::vector<std::shared_ptr<hittable>> objects;
 
-    hittable_list() {}
-    hittable_list(std::shared_ptr<hittable> object) { add(object);}
+    hittable_list();
+    hittable_list(std::shared_ptr<hittable> object);
 
-    void clear() {objects.clear();}
+    void clear();
 
-    void add(std::shared_ptr<hittable> object) {
-        if(object != nullptr){
-            objects.push_back(object);
-        }
-    }
+    void add(std::shared_ptr<hittable> object);
 
-    bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
-        hit_record temp_rec;
-        bool hit_anything = false;
-        auto closest_so_far = ray_t.max;
+    bool hit(const ray& r, interval ray_t, hit_record& rec) const override;
 
-        for(const auto& object : objects){
-            if(object == nullptr) continue;
-            if(object->hit(r, interval(ray_t.min, closest_so_far), temp_rec)){
-                hit_anything = true;
-                closest_so_far = temp_rec.t;
-                rec = temp_rec;
-            }
-        }
+    aabb bounding_box() const override;
 
-        return hit_anything;
-    }
+private:
+    aabb bbox;
 };

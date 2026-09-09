@@ -6,6 +6,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(PROJECT_SOURCES
     src/main.cpp
+    src/camera.cpp
+    src/vec3.cpp
+    src/sphere.cpp
+    src/ray.cpp
+    src/hittable.cpp
+    src/hittable_list.cpp
+    src/interval.cpp
+    src/aabb.cpp
+    src/material.cpp
+    src/bvh.cpp
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

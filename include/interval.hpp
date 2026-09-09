@@ -1,33 +1,25 @@
 #pragma once
+#include "constants.hpp"
 
 class interval{
 public:
     double min, max;
 
-    interval() : min(-infinity), max(+infinity) {}
+    interval();
 
-    interval(double _min, double _max) : min(_min), max(_max) {}
+    interval(double _min, double _max);
 
-    double size() const{
-        return max - min;
-    }
+    interval(const interval& a, const interval& b);
 
-    bool contains(double x) const {
-        return (min <= x && x <= max);
-    }
+    double size() const;
 
-    bool surrounds(double x) const {
-        return (min < x && x < max);
-    } 
+    bool contains(double x) const;
 
-    double clamp(double x) const {
-        if (x < min) return min;
-        if (x > max) return max;
-        return x;
-    }
+    bool surrounds(double x) const;
+
+    double clamp(double x) const;
+
+    interval expand(double delta);
 
     static const interval empty, universe;
 };
-
-const interval interval::empty    = interval(+infinity, -infinity);
-const interval interval::universe = interval(-infinity, +infinity);

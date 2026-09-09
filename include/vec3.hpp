@@ -1,61 +1,37 @@
 #pragma once
+#include "constants.hpp"
 
 class vec3{
 private:
     double e[3];
 public:    
-    vec3() : e{0,0,0} {}
+    vec3();
 
-    vec3(double e0, double e1, double e2) : e{e0, e1, e2} {}
+    vec3(double e0, double e1, double e2);
 
-    double x() const {return e[0];}
-    double y() const {return e[1];}
-    double z() const {return e[2];}
+    double x() const;
+    double y() const;
+    double z() const;
 
-    vec3 operator-() const {return vec3(-e[0], -e[1], -e[2]);}
-    double operator[](int i) const {return e[i];}
-    double& operator[](int i) {return e[i];}
+    vec3 operator-() const;
+    double operator[](int i) const;
+    double& operator[](int i);
 
-    vec3& operator+=(const vec3& v){
-        e[0] += v.e[0];
-        e[1] += v.e[1];
-        e[2] += v.e[2];
+    vec3& operator+=(const vec3& v);
 
-        return *this;
-    }
+    vec3& operator*=(double t);
 
-    vec3& operator*=(double t){
-        e[0] *= t;
-        e[1] *= t;
-        e[2] *= t;
+    vec3& operator/=(double t);
 
-        return *this;
-    }
+    double length_squared() const;
 
-    vec3& operator/=(double t){
-        return *this *= 1/t;
-    }
+    double length() const;
 
-    double length_squared() const{
-        return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
-    }
+    static vec3 random_vector();
 
-    double length() const{
-        return std::sqrt(length_squared());
-    }
+    static vec3 random_vector(double min, double max);
 
-    static vec3 random_vector() {
-        return vec3(random_double(), random_double(), random_double());
-    }
-
-    static vec3 random_vector(double min, double max) {
-        return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
-    }
-
-    bool near_zero() const{
-        auto s = 1e-8;
-        return (std::fabs(e[0]) < s) && (std::fabs(e[1]) < s) && (std::fabs(e[2]) < s);
-    }
+    bool near_zero() const;
 };
 
 using point3 = vec3;

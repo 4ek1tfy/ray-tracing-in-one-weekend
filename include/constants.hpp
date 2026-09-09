@@ -23,9 +23,6 @@ inline double random_double(double min, double max) {
     return min + (max-min)*random_double();
 }
 
-#include "vec3.hpp"
-#include "ray.hpp"
-#include "interval.hpp"
-#include "color.hpp"
-#include "hittable.hpp"
-#include "material.hpp"
+inline int random_int(int min, int max){
+    return static_cast<int>(random_double(min, max+1));
+}

@@ -1,45 +1,25 @@
 #pragma once
-#include <algorithm>
+#include "hittable.hpp"
+#include "vec3.hpp"
+#include "ray.hpp"
+#include "material.hpp"
+#include "aabb.hpp"
+
+#include <memory>
 
 class sphere : public hittable{
 public:
-    sphere(const point3& _center, double _radius, std::shared_ptr<material> _mat) : 
-      center(_center), radius(std::max(0.001, _radius)), mat(std::move(_mat)){}
+    sphere(const point3& static_center, double _radius, std::shared_ptr<material> _mat);
 
-    bool hit(const ray& r, interval ray_t, hit_record& rec) const override{
-        vec3 oc = center - r.origin();
-        double a = r.direction().length_squared();
-        auto h = dot(r.direction(), oc);
-        auto c = oc.length_squared() - radius*radius;
-        auto discriminant = h*h - a*c;
+    sphere(const point3& center1, const point3& center2, double radius, std::shared_ptr<material> mat);
+    
+    bool hit(const ray& r, interval ray_t, hit_record& rec) const override;
 
-        if(discriminant < 0 || a == 0.0){
-            return false;
-        }
-
-
-        auto sqrtd = sqrt(discriminant);
-
-        auto root = (h - sqrtd) / a;
-        if(!ray_t.surrounds(root)){
-            root = (h + sqrtd) / a;
-            if (!ray_t.surrounds(root)) return false;
-        }
-
-        rec.t = root;
-        rec.p = r.at(rec.t);
-
-        if(radius == 0.0) return false;
-        
-        vec3 outward_normal = (rec.p - center) / radius;
-        rec.set_face_normal(r, outward_normal);
-        rec.mat = mat;
-
-        return true;
-    }
+    aabb bounding_box() const override;
 
 private:
-    vec3 center;
+    ray center;
     double radius;
     std::shared_ptr<material> mat;
+    aabb bbox;
 };
