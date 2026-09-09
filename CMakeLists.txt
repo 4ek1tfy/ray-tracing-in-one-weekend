@@ -16,6 +16,7 @@ set(PROJECT_SOURCES
     src/aabb.cpp
     src/material.cpp
     src/bvh.cpp
+    src/texture.cpp
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

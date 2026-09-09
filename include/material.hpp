@@ -3,6 +3,7 @@
 #include "vec3.hpp"
 #include "hittable.hpp"
 #include "color.hpp"
+#include "texture.hpp"
 
 class material{
 public:
@@ -13,12 +14,14 @@ public:
 
 class lambertian : public material{
 public:
-    lambertian(const color& _albedo);
+    lambertian(const color& albedo);
+
+    lambertian(std::shared_ptr<texture> _tex);
 
     bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override;
 
 private:
-    color albedo;
+    std::shared_ptr<texture> tex;
 };
 
 class metal : public material{

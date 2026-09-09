@@ -1,4 +1,7 @@
 #pragma once
+#include "vec3.hpp"
+#include "color.hpp"
+#include "interval.hpp"
 
 using color = vec3;
 
