@@ -17,8 +17,13 @@ set(PROJECT_SOURCES
     src/material.cpp
     src/bvh.cpp
     src/texture.cpp
+    src/rtw_stb_image.cpp
+    src/perlin.cpp
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC 
+    include 
+    external
+)

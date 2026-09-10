@@ -1,6 +1,8 @@
 #pragma once
 #include "vec3.hpp"
 #include "color.hpp"
+#include "rtw_stb_image.hpp"
+#include "perlin.hpp"
 
 #include <memory>
 
@@ -35,4 +37,24 @@ private:
     double inv_scale;
     std::shared_ptr<texture> even;
     std::shared_ptr<texture> odd;
+};
+
+class image_texture : public texture {
+public:
+    image_texture(const char* filename);
+
+    color value(double u, double v, const point3& p) const override;
+
+private:
+    rtw_image image;
+};
+
+class noise_texture : public texture {
+public:
+    noise_texture();
+
+    color value(double u, double v, const point3& p) const override;
+
+private:
+    perlin noise;
 };

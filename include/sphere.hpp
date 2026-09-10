@@ -17,6 +17,8 @@ public:
 
     aabb bounding_box() const override;
 
+    static void get_sphere_uv(const point3& p, double& u, double& v);
+
 private:
     ray center;
     double radius;
