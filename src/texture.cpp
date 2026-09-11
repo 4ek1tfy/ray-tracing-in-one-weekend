@@ -41,8 +41,8 @@ color image_texture::value(double u, double v, const point3& p) const {
     return color(color_scale*pixel[0], color_scale*pixel[1], color_scale*pixel[2]);
 }
 
-noise_texture::noise_texture() {}
+noise_texture::noise_texture(double _scale) : scale(_scale) {}
 
 color noise_texture::value(double u, double v, const point3& p) const {
-    return color(1,1,1) * noise.noise(p);
+    return color(.5, .5, .5) * (1 + std::sin(scale * p.z() + 10 * noise.turb(p, 7)));
 }
