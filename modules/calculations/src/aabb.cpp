@@ -2,7 +2,9 @@
 
 aabb::aabb() {}
 
-aabb::aabb(const interval& x, const interval& y, const interval& z) : x(x), y(y), z(z) {}
+aabb::aabb(const interval& x, const interval& y, const interval& z) : x(x), y(y), z(z) {
+    pad_to_minimums();
+}
 
 aabb::aabb(const point3& a, const point3& b) {
 
@@ -15,6 +17,8 @@ aabb::aabb(const aabb& box0, const aabb& box1) {
     x = interval(box0.x, box1.x);
     y = interval(box0.y, box1.y);
     z = interval(box0.z, box1.z);
+
+    pad_to_minimums();
 }
 
 const interval& aabb::axis_interval(int n) const {
@@ -53,6 +57,13 @@ int aabb::longest_axis() const {
         return x.size() > z.size() ? 0 : 2;
     else
         return y.size() > z.size() ? 1 : 2;
+}
+
+void aabb::pad_to_minimums() {
+    double delta = 0.0001;
+    if (x.size() < delta) x = x.expand(delta);
+    if (y.size() < delta) y = y.expand(delta);
+    if (z.size() < delta) z = z.expand(delta);
 }
 
 const aabb aabb::empty    = aabb(interval::empty,    interval::empty,    interval::empty);

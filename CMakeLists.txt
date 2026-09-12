@@ -7,23 +7,22 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(PROJECT_SOURCES
     src/main.cpp
     src/camera.cpp
-    src/vec3.cpp
-    src/sphere.cpp
-    src/ray.cpp
-    src/hittable.cpp
-    src/hittable_list.cpp
-    src/interval.cpp
-    src/aabb.cpp
-    src/material.cpp
-    src/bvh.cpp
-    src/texture.cpp
-    src/rtw_stb_image.cpp
-    src/perlin.cpp
 )
+
+set(PROJECT_MODULES
+    calculations
+    math
+    objects
+    properties
+)
+
+add_subdirectory(modules/calculations)
+add_subdirectory(modules/math)
+add_subdirectory(modules/objects)
+add_subdirectory(modules/properties)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC 
-    include 
-    external
-)
+target_include_directories(${PROJECT_NAME} PUBLIC include)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_MODULES})

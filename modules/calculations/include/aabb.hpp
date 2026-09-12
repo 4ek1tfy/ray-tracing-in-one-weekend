@@ -23,4 +23,8 @@ public:
     int longest_axis() const;
 
     static const aabb empty, universe;
+
+private:
+
+    void pad_to_minimums();
 };
