@@ -5,6 +5,7 @@ add_library(${PROJECT_NAME} STATIC
     src/hittable_list.cpp
     src/hittable.cpp
     src/sphere.cpp
+    src/quad.cpp
 )
 
 set(PROJECT_MODULES

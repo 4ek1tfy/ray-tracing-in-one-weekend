@@ -7,18 +7,17 @@ aabb::aabb(const interval& x, const interval& y, const interval& z) : x(x), y(y)
 }
 
 aabb::aabb(const point3& a, const point3& b) {
-
     x = (a[0] <= b[0]) ? interval(a[0], b[0]) : interval(b[0], a[0]);
     y = (a[1] <= b[1]) ? interval(a[1], b[1]) : interval(b[1], a[1]);
     z = (a[2] <= b[2]) ? interval(a[2], b[2]) : interval(b[2], a[2]);
+
+    pad_to_minimums();
 }
 
 aabb::aabb(const aabb& box0, const aabb& box1) {
     x = interval(box0.x, box1.x);
     y = interval(box0.y, box1.y);
     z = interval(box0.z, box1.z);
-
-    pad_to_minimums();
 }
 
 const interval& aabb::axis_interval(int n) const {
