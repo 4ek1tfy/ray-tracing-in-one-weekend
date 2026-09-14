@@ -10,6 +10,7 @@ public:
     int image_width = 100;
     int samples_per_pixel = 10;
     int max_depth = 10;
+    color background;
 
     double vfov = 90;
     point3 lookfrom = point3(0,0,0);

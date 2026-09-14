@@ -10,6 +10,10 @@ public:
     virtual ~material();
 
     virtual bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const;
+
+    virtual color emitted(double u, double v, const point3& p) const {
+        return color(0, 0, 0);
+    }
 };
 
 class lambertian : public material{
@@ -36,13 +40,26 @@ private:
 };
 
 class dielectric : public material {
-  public:
+public:
     dielectric(double _refraction_index);
 
     bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override;
 
-  private:
+private:
     double refraction_index;
 
     static double reflectance(double cosine, double refraction_index);
+};
+
+class diffuse_light : public material {
+public:
+    diffuse_light(std::shared_ptr<texture> _tex) : tex(std::move(_tex)) {}
+    diffuse_light(const color& emit) : tex(std::make_shared<solid_color>(emit)) {}
+
+    color emitted(double u, double v, const point3& p) const override {
+        return tex->value(u, v, p);
+    }
+
+private:
+    std::shared_ptr<texture> tex;
 };
