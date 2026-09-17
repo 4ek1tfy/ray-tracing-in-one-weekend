@@ -3,6 +3,8 @@
 #include "interval.hpp"
 #include "material.hpp"
 
+#include <execution>
+
 void camera::render(const hittable& world){
     initialize();
 

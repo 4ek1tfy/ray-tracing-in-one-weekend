@@ -13,9 +13,13 @@ set(PROJECT_MODULES
     objects
 )
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE      
+    RTW_IMAGES_PATH="\"${CMAKE_CURRENT_SOURCE_DIR}/external/images\""
+)
+
 target_include_directories(${PROJECT_NAME} PUBLIC 
     include
-    external    
+    external
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_MODULES})

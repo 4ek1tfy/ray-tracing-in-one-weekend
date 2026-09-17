@@ -7,6 +7,7 @@ add_library(${PROJECT_NAME} STATIC
     src/sphere.cpp
     src/quad.cpp
     src/camera.cpp
+    src/constant_medium.cpp
 )
 
 set(PROJECT_MODULES

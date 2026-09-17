@@ -23,3 +23,11 @@ public:
 
     static const interval empty, universe;
 };
+
+inline interval operator+(const interval& i, const double d){
+    return interval(i.min + d, i.max + d);
+}
+
+inline interval operator+(const double d, const interval& i){
+    return i + d;
+}

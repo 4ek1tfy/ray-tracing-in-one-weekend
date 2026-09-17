@@ -15,18 +15,13 @@ rtw_image::rtw_image(const char* image_filename) {
     // width() and height() will return 0.
 
     auto filename = std::string(image_filename);
-    auto imagedir = getenv("RTW_IMAGES");
+    auto imagedir = getenv("RTW_IMAGES_PATH");;
 
     // Hunt for the image file in some likely locations.
     if (imagedir && load(std::string(imagedir) + "/" + image_filename)) return;
     if (load(filename)) return;
     if (load("external/images/" + filename)) return;
     if (load("../external/images/" + filename)) return;
-    if (load("../../external/images/" + filename)) return;
-    if (load("../../../external/images/" + filename)) return;
-    if (load("../../../../external/images/" + filename)) return;
-    if (load("../../../../../external/images/" + filename)) return;
-    if (load("../../../../../../external/images/" + filename)) return;
 
     std::cerr << "ERROR: Could not load image file '" << image_filename << "'.\n";
 }

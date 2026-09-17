@@ -22,6 +22,9 @@ add_subdirectory(modules/properties)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC 
+    include
+    external
+)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_MODULES})
