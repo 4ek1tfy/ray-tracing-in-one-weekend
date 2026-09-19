@@ -3,7 +3,9 @@
 #include "interval.hpp"
 #include "material.hpp"
 
-#include <execution>
+#include "stdexec/execution.hpp"
+#include "stdexec/concepts.hpp"
+#include "stdexec/coroutine.hpp"
 
 void camera::render(const hittable& world){
     initialize();

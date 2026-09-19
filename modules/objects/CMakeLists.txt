@@ -10,12 +10,15 @@ add_library(${PROJECT_NAME} STATIC
     src/constant_medium.cpp
 )
 
+target_include_directories(${PROJECT_NAME} PUBLIC include)
+
+set(STDEXEC_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(STDEXEC_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
 set(PROJECT_MODULES
     calculations
     math
     properties
+    stdexec
 )
-
-target_include_directories(${PROJECT_NAME} PUBLIC include)
-
 target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_MODULES})
