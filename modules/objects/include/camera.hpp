@@ -4,6 +4,9 @@
 #include "ray.hpp"
 #include "color.hpp"
 
+#include <stdexec/execution.hpp>
+#include <exec/static_thread_pool.hpp>
+
 class camera{
 public:
     double aspect_ratio = 1.0;
@@ -32,6 +35,11 @@ private:
     vec3 u, v, w;
     vec3   defocus_disk_u;
     vec3   defocus_disk_v; 
+    int channels = 3;
+    
+    std::vector<uint8_t> image_data; 
+
+    exec::static_thread_pool pool{std::thread::hardware_concurrency()}; 
 
     void initialize();
 

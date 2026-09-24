@@ -359,7 +359,7 @@ void final_scene(int _image_width, int _samples_per_pixel, int _max_depth) {
 
     camera cam;
 
-    cam.aspect_ratio      = 1.0;
+    cam.aspect_ratio      = 16.9/9.0;
     cam.image_width       = _image_width;
     cam.samples_per_pixel = _samples_per_pixel;
     cam.max_depth         = _max_depth;
@@ -377,7 +377,7 @@ void final_scene(int _image_width, int _samples_per_pixel, int _max_depth) {
 
 
 int main() {
-    switch (9) {
+    switch (7) {
         case 1: bouncing_spheres();  break;
         case 2: checkered_spheres(); break;
         case 3: earth(); break;
@@ -386,7 +386,7 @@ int main() {
         case 6: simple_light(); break;
         case 7: cornell_box(); break;
         case 8: cornell_smoke(); break;
-        case 9:  final_scene(400, 10, 40); break;
-        default: final_scene(400,   250,  4); break;
+        case 9:  final_scene(1920, 100, 50); break;
+        default: final_scene(1920,   1000,  100); break;
     }
 }

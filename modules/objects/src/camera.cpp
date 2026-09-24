@@ -2,32 +2,98 @@
 #include "constants.hpp"
 #include "interval.hpp"
 #include "material.hpp"
+#include "hittable_list.hpp"
 
 #include "stdexec/execution.hpp"
 #include "stdexec/concepts.hpp"
 #include "stdexec/coroutine.hpp"
+#include "exec/start_detached.hpp"
+
+#include "stb_image_write.hpp"
+
+#include <semaphore>
+#include <syncstream>
 
 void camera::render(const hittable& world){
     initialize();
 
-    std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
+    std::clog << "Rendering scene...\n";
 
-    for(int j = 0; j < image_height; j++){
-        std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
-        
-        for(int i = 0; i < image_width; i++){
-            color pixel_color(0, 0, 0);
+    auto raw_data_ptr = std::make_shared<std::vector<uint8_t>>(image_data);
+    auto raw_world_ptr = std::shared_ptr<const hittable>(&world, [](const hittable*){});
 
-            for(int sample = 0; sample < samples_per_pixel; sample++){
-                ray r = get_ray(i, j);
+    auto render_done = std::make_shared<std::binary_semaphore>(0);
 
-                pixel_color += ray_color(r, max_depth, world);
+    constexpr int tile_size_x = 32;
+    constexpr int tile_size_y = 32;
+
+    int tiles_x = (image_width + tile_size_x - 1) / tile_size_x;
+    int tiles_y = (image_height + tile_size_y - 1) / tile_size_y;
+    int total_tiles = tiles_x * tiles_y;
+
+    int h = image_height;
+    int w = image_width;
+    int ch = channels;
+
+    auto scheduler = pool.get_scheduler();
+
+    auto render_pipeline = stdexec::just(raw_world_ptr, raw_data_ptr)
+        | stdexec::continues_on(scheduler)
+
+        | stdexec::bulk(stdexec::par, total_tiles, [=, this](int tile_idx, const auto& world_ptr, auto dev_data) {
+
+            {
+                std::osyncstream synced_out(std::clog);
+                synced_out << "№" << tile_idx << "\n";
             }
-            write_color(std::cout, pixel_sample_scale * pixel_color);
-        }
-    }
+            uint8_t* dev_data_ptr = dev_data->data();
 
-    std::clog << "\rDone.                            \n";
+            const hittable& local_world = *world_ptr;
+
+            int tile_x = tile_idx % tiles_x;
+            int tile_y = tile_idx / tiles_x;
+
+            int start_x = tile_x * tile_size_x;
+            int start_y = tile_y * tile_size_y;
+
+            int end_x = std::min(start_x + tile_size_x, w);
+            int end_y = std::min(start_y + tile_size_y, h);
+
+            for(int j = start_y; j < end_y; j++){
+                for(int i = start_x; i < end_x; i++){
+                    color pixel_color(0, 0, 0);
+
+                    for(int sample = 0; sample < samples_per_pixel; sample++){
+                        ray r = get_ray(i, j);
+
+                        pixel_color += ray_color(r, max_depth, local_world);
+                    }
+                    pixel_color = write_color(pixel_sample_scale * pixel_color);
+
+                    uint8_t r = static_cast<int>(pixel_color.x());
+                    uint8_t g = static_cast<int>(pixel_color.y());
+                    uint8_t b = static_cast<int>(pixel_color.z());
+
+                    int pixel_index = (w * j + i) * ch;
+
+                    dev_data_ptr[pixel_index + 0] = r;
+                    dev_data_ptr[pixel_index + 1] = g;
+                    dev_data_ptr[pixel_index + 2] = b;
+                }
+            }         
+        })
+        | stdexec::then([=](const auto world,auto dev_data) {
+            std::clog << "\nRender completed successfully! Saving file...\n";
+            stbi_write_png("result.png", w, h, ch, 
+                           dev_data->data(), ch * w);
+            std::clog << "Done. result.png saved.\n";
+
+            render_done->release();
+        });
+
+    exec::start_detached(std::move(render_pipeline));
+
+    render_done->acquire();
 
     return;
 }
@@ -35,6 +101,8 @@ void camera::render(const hittable& world){
 void camera::initialize(){
     image_height = static_cast<int>(image_width/aspect_ratio);
     image_height = image_height < 1 ? 1 : image_height;
+
+    image_data.resize(image_height * image_width * channels);
 
     pixel_sample_scale = 1.0 / samples_per_pixel;
 

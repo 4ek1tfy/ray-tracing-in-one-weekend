@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.25)
 project(properties)
 
 add_library(${PROJECT_NAME} STATIC 
@@ -13,13 +13,8 @@ set(PROJECT_MODULES
     objects
 )
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE      
-    RTW_IMAGES_PATH="\"${CMAKE_CURRENT_SOURCE_DIR}/external/images\""
-)
+target_include_directories(${PROJECT_NAME} PUBLIC include)
 
-target_include_directories(${PROJECT_NAME} PUBLIC 
-    include
-    external
-)
+target_include_directories(${PROJECT_NAME} PRIVATE external)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_MODULES})

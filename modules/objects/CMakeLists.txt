@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.25)
 project(objects)
 
 add_library(${PROJECT_NAME} STATIC 
@@ -8,7 +8,10 @@ add_library(${PROJECT_NAME} STATIC
     src/quad.cpp
     src/camera.cpp
     src/constant_medium.cpp
+    src/stb_image_write_impl.cpp
 )
+
+target_include_directories(${PROJECT_NAME} PRIVATE external/image_write)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
